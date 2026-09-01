@@ -42,9 +42,37 @@ pip install check-jsonschema
 check-jsonschema --schemafile schema/workflow-schema.json workflows/my_workflow.yaml
 ```
 
-## SchemaStore Auto-Detection
+## Remote schema (no local copy)
 
-The yaml-workflow schema is registered with [SchemaStore](https://www.schemastore.org/).
-Editors that support SchemaStore (VS Code with YAML extension, IntelliJ, etc.) will
-automatically validate and provide autocompletion for files matching `*workflow*.yaml`
-without any manual configuration.
+You can point your editor or validator at the schema over HTTPS instead of a
+local file — the canonical URL is the `$id` declared in the schema:
+
+```yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/orieg/yaml-workflow/main/schema/workflow-schema.json
+```
+
+```bash
+check-jsonschema \
+  --schemafile https://raw.githubusercontent.com/orieg/yaml-workflow/main/schema/workflow-schema.json \
+  workflows/my_workflow.yaml
+```
+
+## Recommended file naming
+
+For zero-config auto-detection via SchemaStore (below), name workflow files with
+a distinctive `.yaml-workflow.yaml` (or `.yaml-workflow.yml`) suffix, e.g.
+`deploy.yaml-workflow.yaml`. Any filename still works with the modeline or the
+explicit editor mappings above — the suffix is only needed for SchemaStore
+auto-detection, and it avoids clashing with the many other tools that use
+generically-named `*.yaml` files.
+
+## SchemaStore auto-detection
+
+This schema is [submitted to SchemaStore](https://github.com/SchemaStore/schemastore/pull/6213).
+Once merged, editors that consume the SchemaStore catalog (VS Code with the Red
+Hat YAML extension, JetBrains IDEs, etc.) will validate and autocomplete files
+matching `*.yaml-workflow.yaml` / `*.yaml-workflow.yml` with no manual
+configuration.
+
+See the [Editor Integration guide](https://orieg.github.io/yaml-workflow/guide/editor-integration/)
+for full setup instructions.
